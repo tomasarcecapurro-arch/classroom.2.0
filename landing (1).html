@@ -1,0 +1,929 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AulaConnect — La app que la escuela técnica necesitaba</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple: #7c3aed;
+      --purple-light: #ede9fe;
+      --cyan: #06b6d4;
+      --dark: #0f172a;
+      --slate: #475569;
+      --muted: #64748b;
+      --border: rgba(148,163,184,.22);
+      --white: #fff;
+      --bg: #f8fbff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--dark);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(248,251,255,.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: .9rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: .7rem;
+      text-decoration: none;
+      color: var(--dark);
+    }
+
+    .nav-logo {
+      width: 38px; height: 38px;
+      background: linear-gradient(135deg, var(--purple), var(--cyan));
+      border-radius: .65rem;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff;
+      font-weight: 900;
+      font-size: .85rem;
+      letter-spacing: -.04em;
+    }
+
+    .nav-brand span { font-weight: 900; font-size: 1.05rem; }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--slate);
+      font-weight: 700;
+      font-size: .88rem;
+      transition: color .2s;
+    }
+
+    .nav-links a:hover { color: var(--purple); }
+
+    .nav-cta {
+      background: linear-gradient(135deg, var(--purple), var(--cyan));
+      color: #fff !important;
+      padding: .5rem 1.1rem;
+      border-radius: 999px;
+      font-weight: 800 !important;
+      font-size: .85rem !important;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 9rem 2rem 6rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: -8rem; left: 50%;
+      transform: translateX(-50%);
+      width: 60rem; height: 40rem;
+      background: radial-gradient(ellipse, rgba(124,58,237,.13) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      background: var(--purple-light);
+      color: var(--purple);
+      border-radius: 999px;
+      padding: .38rem .85rem;
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-badge span {
+      width: 6px; height: 6px;
+      background: var(--purple);
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      font-weight: 900;
+      letter-spacing: -.06em;
+      line-height: 1.0;
+      margin-bottom: 1.4rem;
+      max-width: 18ch;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--purple), var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--slate);
+      max-width: 44ch;
+      margin: 0 auto 2.2rem;
+      font-weight: 500;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--purple), var(--cyan));
+      color: #fff;
+      border: 0;
+      border-radius: 999px;
+      padding: .85rem 2rem;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      transition: opacity .2s, transform .15s;
+    }
+
+    .btn-primary:hover { opacity: .9; transform: translateY(-1px); }
+
+    .btn-secondary {
+      background: #fff;
+      color: var(--dark);
+      border: 1.5px solid var(--border);
+      border-radius: 999px;
+      padding: .85rem 2rem;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      transition: border-color .2s, transform .15s;
+    }
+
+    .btn-secondary:hover { border-color: var(--purple); transform: translateY(-1px); }
+
+    /* ── App preview ── */
+    .preview-wrapper {
+      max-width: 960px;
+      margin: 4rem auto 0;
+      padding: 0 2rem;
+      position: relative;
+    }
+
+    .preview-glow {
+      position: absolute;
+      inset: -2rem;
+      background: radial-gradient(ellipse at 50% 80%, rgba(124,58,237,.15), transparent 65%);
+      pointer-events: none;
+    }
+
+    .preview-frame {
+      background: rgba(255,255,255,.85);
+      border: 1px solid var(--border);
+      border-radius: 1.5rem;
+      box-shadow: 0 2rem 6rem rgba(30,41,59,.14), 0 .5rem 2rem rgba(124,58,237,.1);
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
+    }
+
+    .preview-bar {
+      background: rgba(248,250,252,.95);
+      border-bottom: 1px solid var(--border);
+      padding: .75rem 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+    }
+
+    .preview-dots { display: flex; gap: .45rem; }
+    .preview-dots i {
+      width: 12px; height: 12px; border-radius: 50%;
+    }
+    .d1 { background: #fc5c57; }
+    .d2 { background: #febc2e; }
+    .d3 { background: #27c840; }
+
+    .preview-url {
+      flex: 1;
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: .3rem .85rem;
+      font-size: .75rem;
+      color: var(--muted);
+      font-weight: 700;
+      max-width: 300px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    /* mini app mockup */
+    .mini-app {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      min-height: 340px;
+      font-size: .8rem;
+    }
+
+    .mini-sidebar {
+      background: linear-gradient(180deg, #fff 0%, #f8fafc 100%);
+      border-right: 1px solid var(--border);
+      padding: 1rem;
+      display: grid;
+      gap: .75rem;
+      align-content: start;
+    }
+
+    .mini-brand {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      padding-bottom: .75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .mini-logo {
+      width: 30px; height: 30px;
+      background: linear-gradient(135deg, var(--purple), var(--cyan));
+      border-radius: .5rem;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff;
+      font-weight: 900;
+      font-size: .7rem;
+    }
+
+    .mini-brand-txt strong { display: block; font-size: .8rem; font-weight: 900; }
+    .mini-brand-txt small  { color: var(--muted); font-size: .65rem; }
+
+    .mini-subject {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: .65rem;
+      padding: .5rem .65rem;
+      position: relative;
+      cursor: default;
+    }
+
+    .mini-subject.active {
+      background: var(--purple-light);
+      border-color: #c4b5fd;
+    }
+
+    .mini-subject::before {
+      content: "";
+      position: absolute;
+      left: 0; top: 20%; height: 60%; width: 3px;
+      border-radius: 999px;
+      background: var(--accent, var(--purple));
+    }
+
+    .mini-subject strong { display: block; font-weight: 900; font-size: .75rem; }
+    .mini-subject small  { color: var(--muted); font-size: .65rem; }
+
+    .mini-main {
+      padding: 1rem;
+      display: grid;
+      gap: .75rem;
+      align-content: start;
+    }
+
+    .mini-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: .5rem;
+    }
+
+    .mini-stat {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: .75rem;
+      padding: .5rem;
+      text-align: center;
+    }
+
+    .mini-stat .num { font-size: 1.1rem; font-weight: 950; letter-spacing: -.05em; }
+    .mini-stat .lbl { font-size: .6rem; color: var(--muted); font-weight: 800; }
+    .mini-stat.w .num { color: #d97706; }
+    .mini-stat.r .num { color: #dc2626; }
+    .mini-stat.ok .num { color: #16a34a; }
+
+    .mini-cards {
+      display: grid;
+      gap: .45rem;
+    }
+
+    .mini-card {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: .65rem;
+      padding: .55rem .65rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .mini-card strong { font-size: .75rem; font-weight: 900; }
+    .mini-card small  { font-size: .65rem; color: var(--muted); display: block; margin-top: .1rem; }
+
+    .mini-badge {
+      border-radius: 999px;
+      padding: .2rem .45rem;
+      font-size: .62rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .mini-badge.ok     { background: #dcfce7; color: #15803d; }
+    .mini-badge.warn   { background: #fef3c7; color: #b45309; }
+    .mini-badge.blue   { background: #dbeafe; color: #1d4ed8; }
+    .mini-badge.danger { background: #fee2e2; color: #b91c1c; }
+
+    /* ── Features ── */
+    .section {
+      padding: 5rem 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-eyebrow {
+      color: var(--purple);
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      margin-bottom: .75rem;
+      text-align: center;
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 900;
+      letter-spacing: -.05em;
+      text-align: center;
+      margin-bottom: .85rem;
+    }
+
+    .section-sub {
+      text-align: center;
+      color: var(--slate);
+      font-size: 1rem;
+      max-width: 44ch;
+      margin: 0 auto 3.5rem;
+      font-weight: 500;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .feature-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 1.5rem;
+      padding: 1.75rem;
+      transition: box-shadow .25s, transform .2s;
+    }
+
+    .feature-card:hover {
+      box-shadow: 0 1rem 3rem rgba(124,58,237,.1);
+      transform: translateY(-3px);
+    }
+
+    .feature-icon {
+      width: 48px; height: 48px;
+      border-radius: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 1.1rem;
+    }
+
+    .icon-purple { background: var(--purple-light); }
+    .icon-cyan   { background: #cffafe; }
+    .icon-green  { background: #dcfce7; }
+    .icon-amber  { background: #fef3c7; }
+    .icon-pink   { background: #fce7f3; }
+    .icon-blue   { background: #dbeafe; }
+
+    .feature-card h3 {
+      font-size: 1.05rem;
+      font-weight: 900;
+      letter-spacing: -.03em;
+      margin-bottom: .5rem;
+    }
+
+    .feature-card p {
+      color: var(--slate);
+      font-size: .9rem;
+      line-height: 1.65;
+    }
+
+    /* ── vs Classroom ── */
+    .compare-section {
+      padding: 5rem 2rem;
+      background: linear-gradient(135deg, #f3f0ff 0%, #e0f7fa 100%);
+    }
+
+    .compare-inner {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 1.5rem;
+      overflow: hidden;
+      box-shadow: 0 1rem 3rem rgba(30,41,59,.1);
+      margin-top: 3rem;
+    }
+
+    .compare-table th {
+      padding: 1rem 1.5rem;
+      font-size: .8rem;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .compare-table th:first-child { text-align: left; color: var(--muted); }
+    .compare-table th:nth-child(2) { background: #f8fafc; color: var(--muted); text-align: center; }
+    .compare-table th:nth-child(3) { background: linear-gradient(135deg, var(--purple), var(--cyan)); color: #fff; text-align: center; }
+
+    .compare-table td {
+      padding: .85rem 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: .9rem;
+    }
+
+    .compare-table td:first-child { font-weight: 700; }
+    .compare-table td:nth-child(2) { text-align: center; background: #fafafa; }
+    .compare-table td:nth-child(3) { text-align: center; background: linear-gradient(135deg, rgba(124,58,237,.04), rgba(6,182,212,.04)); }
+
+    .check { color: #16a34a; font-size: 1.1rem; }
+    .cross { color: #dc2626; font-size: 1.1rem; }
+    .partial { color: #d97706; font-size: .85rem; font-weight: 800; }
+
+    /* ── Tech stack ── */
+    .stack-section { padding: 4rem 2rem; }
+
+    .stack-inner {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .stack-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-top: 3rem;
+    }
+
+    .stack-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 1.2rem;
+      padding: 1.4rem;
+      text-align: center;
+      transition: box-shadow .2s;
+    }
+
+    .stack-card:hover { box-shadow: 0 .5rem 2rem rgba(30,41,59,.1); }
+
+    .stack-emoji { font-size: 2rem; margin-bottom: .65rem; display: block; }
+    .stack-card h4 { font-weight: 900; font-size: .95rem; margin-bottom: .3rem; }
+    .stack-card p  { color: var(--muted); font-size: .8rem; }
+
+    /* ── Team ── */
+    .team-section {
+      padding: 5rem 2rem;
+      background: var(--dark);
+      color: #fff;
+    }
+
+    .team-inner { max-width: 860px; margin: 0 auto; text-align: center; }
+
+    .team-section .section-eyebrow { color: #a78bfa; }
+    .team-section .section-title   { color: #fff; }
+    .team-section .section-sub     { color: #94a3b8; }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+      margin-top: 3rem;
+    }
+
+    .team-card {
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 1.2rem;
+      padding: 1.4rem 1rem;
+      transition: background .2s;
+    }
+
+    .team-card:hover { background: rgba(255,255,255,.1); }
+
+    .team-avatar {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--purple), var(--cyan));
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900;
+      font-size: 1rem;
+      color: #fff;
+      margin: 0 auto .75rem;
+    }
+
+    .team-card h4  { font-weight: 900; font-size: .9rem; }
+    .team-card span { color: #94a3b8; font-size: .78rem; }
+
+    /* ── Footer ── */
+    footer {
+      background: #0b0f1a;
+      padding: 2.5rem 2rem;
+      text-align: center;
+    }
+
+    .footer-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      margin-bottom: .75rem;
+    }
+
+    footer p { color: #64748b; font-size: .85rem; }
+    footer strong { color: #94a3b8; }
+
+    /* ── Scroll animation ── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .mini-app { grid-template-columns: 1fr; }
+      .mini-sidebar { display: none; }
+      .compare-table th:nth-child(2),
+      .compare-table td:nth-child(2) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-brand">
+    <div class="nav-logo">AC</div>
+    <span>AulaConnect</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Funciones</a></li>
+    <li><a href="#compare">vs Classroom</a></li>
+    <li><a href="#tech">Tecnología</a></li>
+    <li><a href="#equipo">Equipo</a></li>
+    <li><a href="#demo" class="nav-cta">Ver demo →</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">
+    <span></span> Proyecto escolar · Escuela Técnica
+  </div>
+  <h1>La app que<br/><em>Classroom</em><br/>debería ser</h1>
+  <p>AulaConnect es una plataforma educativa para celular que le da al alumno y al docente el control que les falta hoy.</p>
+  <div class="hero-actions">
+    <a href="#demo" class="btn-primary">Ver demo en vivo →</a>
+    <a href="#features" class="btn-secondary">Conocer más</a>
+  </div>
+</section>
+
+<!-- APP PREVIEW -->
+<div class="preview-wrapper" id="demo">
+  <div class="preview-glow"></div>
+  <div class="preview-frame">
+    <div class="preview-bar">
+      <div class="preview-dots">
+        <i class="d1"></i><i class="d2"></i><i class="d3"></i>
+      </div>
+      <div class="preview-url">aulaconnect.app</div>
+    </div>
+    <div class="mini-app">
+      <div class="mini-sidebar">
+        <div class="mini-brand">
+          <div class="mini-logo">AC</div>
+          <div class="mini-brand-txt">
+            <strong>AulaConnect</strong>
+            <small>5to A Informática</small>
+          </div>
+        </div>
+        <div class="mini-subject active" style="--accent:#7c3aed">
+          <strong>Programación</strong>
+          <small>2/4 aprobados</small>
+        </div>
+        <div class="mini-subject" style="--accent:#0ea5e9">
+          <strong>Redes</strong>
+          <small>1/3 aprobados</small>
+        </div>
+        <div class="mini-subject" style="--accent:#f59e0b">
+          <strong>Sist. Operativos</strong>
+          <small>1/3 aprobados</small>
+        </div>
+      </div>
+      <div class="mini-main">
+        <div class="mini-stats">
+          <div class="mini-stat w"><div class="num">2</div><div class="lbl">Por hacer</div></div>
+          <div class="mini-stat r"><div class="num">1</div><div class="lbl">Vencidos</div></div>
+          <div class="mini-stat r"><div class="num">0</div><div class="lbl">A rehacer</div></div>
+          <div class="mini-stat ok"><div class="num">2</div><div class="lbl">Aprobados</div></div>
+        </div>
+        <div class="mini-cards">
+          <div class="mini-card">
+            <div>
+              <strong>TP: Algoritmos de ordenamiento</strong>
+              <small>Entrega: 10 jun</small>
+            </div>
+            <span class="mini-badge ok">Aprobado</span>
+          </div>
+          <div class="mini-card">
+            <div>
+              <strong>TP: Base de datos relacional</strong>
+              <small>Entrega: 05 jul</small>
+            </div>
+            <span class="mini-badge blue">Entregado</span>
+          </div>
+          <div class="mini-card">
+            <div>
+              <strong>Proyecto final: App Python</strong>
+              <small>Entrega: 01 ago</small>
+            </div>
+            <span class="mini-badge warn">Por hacer</span>
+          </div>
+          <div class="mini-card">
+            <div>
+              <strong>Examen parcial 1</strong>
+              <small>Entrega: 20 jun</small>
+            </div>
+            <span class="mini-badge ok">Aprobado</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="section fade-in" id="features">
+  <p class="section-eyebrow">Funcionalidades</p>
+  <h2 class="section-title">Todo lo que necesitás en un solo lugar</h2>
+  <p class="section-sub">Diseñado pensando en cómo funciona realmente una escuela técnica.</p>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon icon-purple">📋</div>
+      <h3>Seguimiento de trabajos</h3>
+      <p>Filtrá tus tareas por estado: por hacer, entregado, aprobado o vencido. Siempre sabés en qué estás.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon icon-cyan">💬</div>
+      <h3>Chat en tiempo real</h3>
+      <p>Los grupos de trabajo tienen un chat propio supervisado por el docente. Sin apps externas, todo dentro de la plataforma.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon icon-green">✅</div>
+      <h3>Aprobación de grupos</h3>
+      <p>Los alumnos solicitan su grupo con nombre y motivo. El docente aprueba o rechaza con un clic. Transparente y ordenado.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon icon-amber">👩‍🏫</div>
+      <h3>Panel docente completo</h3>
+      <p>El docente puede cambiar el estado de cada trabajo, poner nota y fecha de entrega directamente desde la app.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon icon-pink">📱</div>
+      <h3>Diseño para celular</h3>
+      <p>Pensada mobile-first. La interfaz se adapta perfectamente a cualquier tamaño de pantalla.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon icon-blue">📊</div>
+      <h3>Estadísticas por materia</h3>
+      <p>Ves de un vistazo cuántos trabajos tenés pendientes, vencidos o aprobados en cada materia.</p>
+    </div>
+  </div>
+</section>
+
+<!-- VS CLASSROOM -->
+<div class="compare-section fade-in" id="compare">
+  <div class="compare-inner">
+    <p class="section-eyebrow" style="text-align:center">Comparación</p>
+    <h2 class="section-title">AulaConnect vs Google Classroom</h2>
+    <p class="section-sub" style="color:#475569">Google Classroom es una herramienta genérica. Nosotros hicimos algo específico para la escuela técnica.</p>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Función</th>
+          <th>Google Classroom</th>
+          <th>AulaConnect ✨</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Seguimiento de trabajos con estados</td>
+          <td><span class="partial">Básico</span></td>
+          <td><span class="check">✓</span></td>
+        </tr>
+        <tr>
+          <td>Chat en tiempo real por grupo</td>
+          <td><span class="cross">✗</span></td>
+          <td><span class="check">✓</span></td>
+        </tr>
+        <tr>
+          <td>Solicitud y aprobación de grupos</td>
+          <td><span class="cross">✗</span></td>
+          <td><span class="check">✓</span></td>
+        </tr>
+        <tr>
+          <td>Panel docente con edición de notas</td>
+          <td><span class="partial">Básico</span></td>
+          <td><span class="check">✓</span></td>
+        </tr>
+        <tr>
+          <td>Estadísticas visuales por materia</td>
+          <td><span class="cross">✗</span></td>
+          <td><span class="check">✓</span></td>
+        </tr>
+        <tr>
+          <td>Diseño responsive para celular</td>
+          <td><span class="partial">Parcial</span></td>
+          <td><span class="check">✓</span></td>
+        </tr>
+        <tr>
+          <td>Supervisión docente del chat</td>
+          <td><span class="cross">✗</span></td>
+          <td><span class="check">✓</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- TECH STACK -->
+<div class="stack-section fade-in" id="tech">
+  <div class="stack-inner">
+    <p class="section-eyebrow" style="text-align:center">Tecnología</p>
+    <h2 class="section-title">Stack moderno y profesional</h2>
+    <p class="section-sub" style="color:var(--slate)">Las mismas tecnologías que se usan en la industria.</p>
+
+    <div class="stack-grid">
+      <div class="stack-card">
+        <span class="stack-emoji">⚛️</span>
+        <h4>React + Vite</h4>
+        <p>Frontend rápido y modular con componentes reutilizables.</p>
+      </div>
+      <div class="stack-card">
+        <span class="stack-emoji">🔥</span>
+        <h4>Firebase</h4>
+        <p>Base de datos en la nube y autenticación de usuarios.</p>
+      </div>
+      <div class="stack-card">
+        <span class="stack-emoji">💬</span>
+        <h4>Firestore</h4>
+        <p>Chat en tiempo real sin necesidad de recargar la página.</p>
+      </div>
+      <div class="stack-card">
+        <span class="stack-emoji">🔐</span>
+        <h4>Firebase Auth</h4>
+        <p>Login seguro para alumnos y docentes.</p>
+      </div>
+      <div class="stack-card">
+        <span class="stack-emoji">📱</span>
+        <h4>Mobile-first CSS</h4>
+        <p>Diseño pensado primero para el celular y adaptado al resto.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TEAM -->
+<section class="team-section fade-in" id="equipo">
+  <div class="team-inner">
+    <p class="section-eyebrow">Equipo</p>
+    <h2 class="section-title">Hecho por estudiantes, para estudiantes</h2>
+    <p class="section-sub">Proyecto de 5to año de Informática · Escuela Técnica</p>
+
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-avatar">T</div>
+        <h4>Tomás</h4>
+        <span>Frontend · Firebase</span>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">L</div>
+        <h4>Lucía M.</h4>
+        <span>UI · Diseño</span>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">F</div>
+        <h4>Facundo</h4>
+        <span>Backend · Auth</span>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">M</div>
+        <h4>Martín R.</h4>
+        <span>Database · Firestore</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">
+    <div class="nav-logo" style="width:32px;height:32px;border-radius:.5rem;font-size:.75rem;background:linear-gradient(135deg,#7c3aed,#06b6d4);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;">AC</div>
+    <strong style="color:#fff;font-size:.95rem;font-weight:900;">AulaConnect</strong>
+  </div>
+  <p>Proyecto escolar · 5to año Informática · <strong>Escuela Técnica 2026</strong></p>
+</footer>
+
+<script>
+  // Scroll animation
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    },
+    { threshold: 0.12 }
+  );
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // Smooth nav highlight
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>
