@@ -1,0 +1,490 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --purple:#7c3aed;--cyan:#06b6d4;--dark:#0f172a;
+  --gray:#64748b;--border:#e2e8f0;--bg:#f8fafc;
+  --white:#fff;--text:#172033;
+}
+body{font-family:Inter,system-ui,sans-serif;background:linear-gradient(135deg,#f8fbff 0%,#eef4ff 45%,#f8fafc 100%);color:var(--text);font-size:14px;line-height:1.5;min-height:100vh}
+button,input,select,textarea{font:inherit;cursor:pointer}
+.shell{display:grid;grid-template-columns:200px 1fr;min-height:100vh;gap:1rem;padding:1rem;max-width:1100px;margin:0 auto}
+.sidebar{display:grid;gap:.75rem;align-self:start;position:sticky;top:1rem}
+.card{background:rgba(255,255,255,.85);border:1px solid rgba(148,163,184,.22);border-radius:1.25rem;padding:.85rem}
+.brand{display:flex;align-items:center;gap:.6rem}
+.logo{width:40px;height:40px;border-radius:.75rem;background:linear-gradient(135deg,var(--purple),var(--cyan));color:#fff;font-weight:900;display:flex;align-items:center;justify-content:center;font-size:.85rem;letter-spacing:-.05em;flex-shrink:0}
+.brand h1{font-size:1.1rem;font-weight:900;margin:0}
+.brand p{font-size:.65rem;color:var(--gray);font-weight:800;text-transform:uppercase;letter-spacing:.1em}
+.eyebrow{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--gray);margin-bottom:.2rem}
+.role-sw{display:grid;grid-template-columns:1fr 1fr;gap:.25rem;background:#eef2ff;border-radius:999px;padding:.25rem;margin-top:.75rem}
+.role-sw button{border:0;background:transparent;border-radius:999px;padding:.45rem .5rem;font-size:.75rem;font-weight:800;color:#475569}
+.role-sw button.active{background:#fff;color:#111;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.sub-nav{display:grid;gap:.5rem}
+.sub-btn{background:rgba(255,255,255,.8);border:1px solid rgba(148,163,184,.24);border-radius:1rem;padding:.75rem .85rem;text-align:left;color:var(--text);display:grid;gap:.15rem;position:relative;transition:transform .15s}
+.sub-btn::before{content:"";position:absolute;left:0;top:22%;height:56%;width:.22rem;border-radius:999px;background:var(--accent)}
+.sub-btn.active{transform:translateX(.15rem);border-color:color-mix(in srgb,var(--accent),white 50%);box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.sub-btn span{font-weight:900;font-size:.82rem}
+.sub-btn small{color:var(--gray);font-size:.7rem}
+.main{display:grid;gap:1rem;min-width:0}
+.hero{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.2rem;border-radius:1.25rem;border:1px solid rgba(148,163,184,.22);background:linear-gradient(135deg,color-mix(in srgb,var(--accent),white 84%),#fff);position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-2rem;top:-2rem;width:7rem;height:7rem;border-radius:999px;background:var(--accent);opacity:.14;filter:blur(8px)}
+.hero h2{font-size:clamp(1.4rem,4vw,2.2rem);letter-spacing:-.06em;font-weight:950;margin:.3rem 0}
+.hero p{color:#475569;margin:.4rem 0 0;font-size:.82rem}
+.meta{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.6rem}
+.pill{background:rgba(255,255,255,.75);border:1px solid rgba(148,163,184,.2);border-radius:999px;padding:.3rem .65rem;font-size:.75rem;font-weight:800;color:#475569;display:inline-flex}
+.pct-card{background:var(--dark);color:#fff;border-radius:1.25rem;padding:.85rem;text-align:center;flex-shrink:0;min-width:80px;position:relative;z-index:1}
+.pct-card span{font-size:1.8rem;font-weight:950;letter-spacing:-.08em;display:block}
+.pct-card small{color:#cbd5e1;font-size:.68rem;font-weight:800}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem}
+.stat{padding:.85rem;border-radius:1.2rem;background:rgba(255,255,255,.85);border:1px solid rgba(148,163,184,.22)}
+.stat .val{font-size:1.8rem;font-weight:950;letter-spacing:-.06em}
+.stat p{color:var(--gray);font-weight:800;font-size:.75rem;margin-top:.1rem}
+.stat.warn .val{color:#d97706}.stat.danger .val{color:#dc2626}.stat.ok .val{color:#16a34a}
+.content-grid{display:grid;grid-template-columns:1.35fr .85fr;gap:1rem;align-items:start}
+.panel{padding:.85rem;border-radius:1.25rem;background:rgba(255,255,255,.85);border:1px solid rgba(148,163,184,.22)}
+.panel-hdr{display:flex;justify-content:space-between;align-items:start;margin-bottom:.85rem}
+.panel-hdr h3{font-size:1.1rem;font-weight:950;letter-spacing:-.04em}
+.filters{display:flex;flex-wrap:wrap;gap:.25rem;background:#eef2ff;border-radius:1rem;padding:.25rem;margin-bottom:.85rem}
+.filters button{border:0;background:transparent;border-radius:999px;padding:.4rem .6rem;font-size:.72rem;font-weight:800;color:#475569}
+.filters button.active{background:#fff;color:#111;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.asgn-list{display:grid;gap:.65rem;max-height:320px;overflow-y:auto}
+.asgn{background:var(--bg);border:1px solid rgba(148,163,184,.2);border-radius:.9rem;padding:.8rem}
+.asgn-top{display:flex;justify-content:space-between;align-items:start;gap:.5rem;margin-bottom:.35rem}
+.asgn h4{font-size:.85rem;font-weight:900;margin:.1rem 0 0}
+.asgn .type{font-size:.65rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--gray)}
+.asgn p{color:var(--gray);font-size:.78rem;margin:.35rem 0}
+.asgn-meta{display:flex;gap:.6rem;font-size:.75rem;font-weight:800;color:#334155}
+.badge{border-radius:999px;padding:.28rem .5rem;font-size:.68rem;font-weight:950;white-space:nowrap}
+.badge.warn{background:#fef3c7;color:#b45309}
+.badge.info{background:#dbeafe;color:#1d4ed8}
+.badge.ok{background:#dcfce7;color:#15803d}
+.badge.danger{background:#fee2e2;color:#b91c1c}
+.teacher-edit{display:grid;grid-template-columns:1.1fr 1fr .7fr;gap:.5rem;margin-top:.65rem}
+.teacher-edit label,.gform label{font-size:.72rem;font-weight:900;color:#475569;display:grid;gap:.25rem}
+.teacher-edit input,.teacher-edit select,.gform input,.gform textarea,.chat-input{background:#fff;border:1px solid #dbe3ef;border-radius:.65rem;color:var(--text);padding:.55rem .65rem;outline:0;transition:border-color .2s,box-shadow .2s;font-size:.8rem}
+.teacher-edit input:focus,.teacher-edit select:focus,.gform input:focus,.gform textarea:focus,.chat-input:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(124,58,237,.1)}
+.gform{display:grid;gap:.7rem}
+.gform textarea{min-height:80px;resize:vertical}
+.chips{display:flex;flex-wrap:wrap;gap:.35rem}
+.chip{display:inline-flex;align-items:center;gap:.25rem;background:var(--bg);border:1px solid #dbe3ef;border-radius:999px;padding:.35rem .55rem;font-size:.75rem;font-weight:800;color:#334155;cursor:pointer;transition:all .15s}
+.chip.sel{background:#ede9fe;border-color:#a78bfa;color:#5b21b6}
+.chip input{display:none}
+.primary-btn,.approve-btn,.reject-btn,.send-btn{border:0;border-radius:.7rem;color:#fff;font-weight:950;padding:.6rem .9rem;font-size:.8rem;cursor:pointer;transition:opacity .15s}
+.primary-btn,.send-btn{background:linear-gradient(135deg,var(--purple),var(--cyan))}
+.approve-btn{background:#16a34a}.reject-btn{background:#ef4444}
+.feedback{border-radius:.75rem;font-size:.82rem;font-weight:800;padding:.6rem .75rem;margin-top:.25rem}
+.feedback.ok{background:#dcfce7;color:#15803d}
+.feedback.err{background:#fee2e2;color:#b91c1c}
+.req-list{border-top:1px solid var(--border);margin-top:.85rem;padding-top:.85rem;display:grid;gap:.5rem}
+.req-item{display:flex;justify-content:space-between;align-items:center;background:var(--bg);border:1px solid var(--border);border-radius:.85rem;padding:.6rem .75rem;font-size:.8rem}
+.req-card{background:var(--bg);border:1px solid rgba(148,163,184,.2);border-radius:.9rem;padding:.8rem;display:grid;gap:.75rem}
+.req-card h4{font-size:.88rem;font-weight:900}
+.req-card p{font-size:.78rem;color:var(--gray)}
+.req-card small{font-size:.72rem;font-weight:800;color:#334155}
+.dec-row{display:flex;gap:.5rem}
+.empty{background:var(--bg);border:1px dashed #cbd5e1;border-radius:.85rem;color:var(--gray);font-weight:700;padding:.85rem;font-size:.8rem}
+.chat-card{padding:.85rem;border-radius:1.25rem;background:rgba(255,255,255,.85);border:1px solid rgba(148,163,184,.22)}
+.chat-tabs{display:flex;gap:.25rem;background:#eef2ff;border-radius:1rem;padding:.25rem;margin-bottom:.85rem;flex-wrap:wrap}
+.chat-tabs button{border:0;background:transparent;border-radius:999px;padding:.4rem .65rem;font-size:.72rem;font-weight:800;color:#475569}
+.chat-tabs button.active{background:#fff;color:#111;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.chat-layout{display:grid;grid-template-columns:140px 1fr;gap:.75rem}
+.chat-members{background:var(--dark);border-radius:.9rem;color:#fff;padding:.75rem;display:flex;flex-direction:column;gap:.35rem}
+.chat-members h4{font-size:.8rem;font-weight:900;margin-bottom:.25rem}
+.chat-members span{background:rgba(255,255,255,.1);border-radius:999px;padding:.3rem .55rem;font-size:.72rem;font-weight:800}
+.chat-members small{color:#cbd5e1;font-size:.65rem;margin-top:auto}
+.chat-box{background:var(--bg);border:1px solid var(--border);border-radius:.9rem;padding:.75rem;display:grid;gap:.65rem;min-width:0}
+.msgs{display:grid;gap:.5rem;max-height:220px;overflow-y:auto;padding-right:.2rem}
+.msg{background:#fff;border:1px solid var(--border);border-radius:.85rem .85rem .85rem .2rem;max-width:78%;padding:.6rem .75rem}
+.msg.own{background:#ede9fe;border-color:#ddd6fe;border-radius:.85rem .85rem .2rem .85rem;justify-self:end}
+.msg strong{display:block;font-size:.68rem;font-weight:900}
+.msg p{font-size:.78rem;color:#334155;margin:.15rem 0}
+.msg span{font-size:.65rem;color:var(--gray);font-weight:800}
+.chat-form{display:grid;grid-template-columns:1fr auto;gap:.5rem}
+.field-title{font-size:.72rem;font-weight:900;color:#475569;margin:0 0 .35rem}
+</style>
+
+<h2 class="sr-only">Prototipo de AulaConnect — app escolar de gestión de materias, trabajos y chat grupal</h2>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="card brand">
+      <div class="logo">AC</div>
+      <div>
+        <p class="eyebrow">Prototipo escolar</p>
+        <h1>AulaConnect</h1>
+      </div>
+    </div>
+    <div class="card" id="profile-card">
+      <p class="eyebrow">Ingresaste como</p>
+      <strong id="role-label">Alumno</strong>
+      <span id="role-sub" style="color:#64748b;font-size:.82rem;display:block;margin-top:.1rem">5to A Informática</span>
+      <div class="role-sw">
+        <button class="active" onclick="setRole('student')">Alumno</button>
+        <button onclick="setRole('teacher')">Docente</button>
+      </div>
+    </div>
+    <nav class="sub-nav" id="sub-nav"></nav>
+  </aside>
+  <main class="main" id="main"></main>
+</div>
+
+<script>
+const subjects=[
+  {id:"prog",name:"Programación",accent:"#7c3aed",teacher:"Prof. Ramírez",room:"Lab 3",description:"Lógica, algoritmos y proyectos en Python.",
+   assignments:[
+    {id:"a1",title:"TP: Algoritmos de ordenamiento",type:"Trabajo Práctico",comment:"Implementar bubble sort y merge sort.",dueDate:"2026-06-10",status:"aprobado",grade:9},
+    {id:"a2",title:"Examen parcial 1",type:"Evaluación",comment:"Estructuras de datos y funciones.",dueDate:"2026-06-20",status:"aprobado",grade:8},
+    {id:"a3",title:"TP: Base de datos relacional",type:"Trabajo Práctico",comment:"Diseño y consultas SQL.",dueDate:"2026-07-05",status:"entregado",grade:null},
+    {id:"a4",title:"Proyecto final: App Python",type:"Proyecto",comment:"App funcional con GUI.",dueDate:"2026-08-01",status:"hacer",grade:null},
+   ],
+   groups:[
+    {id:"g1",name:"Equipo Frontend",status:"aprobado",members:["Tomás","Lucía M.","Facundo"],reason:"Para el proyecto final de app.",messages:[
+      {author:"Prof. Ramírez",text:"Grupo aprobado. Ya pueden coordinar desde acá.",time:"Lunes 10:00"},
+      {author:"Tomás",text:"Gracias profe! Arrancamos hoy.",time:"Lunes 10:05"},
+      {author:"Lucía M.",text:"Perfecto, yo me encargo de la interfaz.",time:"Lunes 10:07"},
+    ]},
+    {id:"g2",name:"Backend Team",status:"pendiente",members:["Tomás","Martín R."],reason:"Para dividir el trabajo del proyecto final.",messages:[]},
+   ]
+  },
+  {id:"redes",name:"Redes",accent:"#0ea5e9",teacher:"Prof. Sánchez",room:"Aula 12",description:"Protocolos, topologías y seguridad en redes.",
+   assignments:[
+    {id:"b1",title:"TP: Modelo OSI",type:"Trabajo Práctico",comment:"Describir cada capa con ejemplos reales.",dueDate:"2026-05-15",status:"aprobado",grade:10},
+    {id:"b2",title:"Práctica: Packet Tracer",type:"Laboratorio",comment:"Configurar una red LAN simulada.",dueDate:"2026-06-01",status:"rehacer",grade:null},
+    {id:"b3",title:"Examen: Subnetting",type:"Evaluación",comment:"Cálculo de subredes IPv4.",dueDate:"2026-06-18",status:"hacer",grade:null},
+   ],
+   groups:[]
+  },
+  {id:"soo",name:"Sistemas Operativos",accent:"#f59e0b",teacher:"Prof. López",room:"Lab 1",description:"Linux, procesos, memoria y virtualización.",
+   assignments:[
+    {id:"c1",title:"Instalación dual boot",type:"Laboratorio",comment:"Windows + Ubuntu en VM.",dueDate:"2026-05-20",status:"aprobado",grade:8},
+    {id:"c2",title:"TP: Gestión de procesos",type:"Trabajo Práctico",comment:"Comandos ps, top, kill en bash.",dueDate:"2026-06-25",status:"entregado",grade:null},
+    {id:"c3",title:"Proyecto: Script de automatización",type:"Proyecto",comment:"Automatizar tareas con bash o Python.",dueDate:"2026-07-20",status:"hacer",grade:null},
+   ],
+   groups:[
+    {id:"c-g1",name:"Team Bash",status:"aprobado",members:["Tomás","Valentina F."],reason:"Proyecto de automatización.",messages:[
+      {author:"Tomás",text:"Empecemos con el script de backup.",time:"Martes 09:30"},
+      {author:"Valentina F.",text:"Dale, yo tengo un ejemplo de cron job.",time:"Martes 09:45"},
+    ]},
+   ]
+  },
+];
+
+const classmates=["Lucía M.","Facundo","Martín R.","Valentina F.","Ignacio P.","Sofía C.","Ramiro T."];
+const today=new Date("2026-06-25T00:00:00");
+
+let state={
+  role:"student",
+  selId:"prog",
+  subjects:JSON.parse(JSON.stringify(subjects)),
+  filter:"todos",
+  reqForm:{name:"",reason:"",members:[]},
+  feedback:null,
+  chatDraft:"",
+  activeGroupId:null,
+};
+
+function getSub(){return state.subjects.find(s=>s.id===state.selId)}
+function visStatus(a){
+  const d=a.dueDate?new Date(a.dueDate+"T00:00:00"):null;
+  if(d&&d<today&&a.status==="hacer")return "vencido";
+  return a.status;
+}
+function stats(asgns){
+  const r={total:0,hacer:0,entregado:0,aprobado:0,rehacer:0,vencido:0};
+  asgns.forEach(a=>{r[visStatus(a)]++;r.total++;});
+  return r;
+}
+function pct(asgns){
+  const ap=asgns.filter(a=>visStatus(a)==="aprobado").length;
+  return asgns.length?Math.round(ap/asgns.length*100):0;
+}
+function fmtDate(v){if(!v)return"Sin fecha";return new Date(v+"T00:00:00").toLocaleDateString("es-AR",{day:"2-digit",month:"short"})}
+
+const statusCfg={
+  hacer:{label:"Por hacer",cls:"warn"},
+  entregado:{label:"Entregado",cls:"info"},
+  aprobado:{label:"Aprobado",cls:"ok"},
+  rehacer:{label:"A rehacer",cls:"danger"},
+  vencido:{label:"Vencido",cls:"danger"},
+};
+
+function setRole(r){
+  state.role=r;
+  document.querySelectorAll(".role-sw button").forEach((b,i)=>{
+    b.classList.toggle("active",(i===0&&r==="student")||(i===1&&r==="teacher"));
+  });
+  document.getElementById("role-label").textContent=r==="student"?"Alumno":"Docente";
+  document.getElementById("role-sub").textContent=r==="teacher"?getSub().teacher:"5to A Informática";
+  renderMain();
+}
+
+function selectSub(id){
+  state.selId=id;
+  state.filter="todos";
+  state.feedback=null;
+  state.reqForm={name:"",reason:"",members:[]};
+  const sub=getSub();
+  const ag=sub.groups.find(g=>g.status==="aprobado");
+  state.activeGroupId=ag?.id??null;
+  renderNav();
+  renderMain();
+}
+
+function renderNav(){
+  const nav=document.getElementById("sub-nav");
+  nav.innerHTML=state.subjects.map(s=>{
+    const st=stats(s.assignments);
+    return `<button class="sub-btn${s.id===state.selId?" active":""}" style="--accent:${s.accent}" onclick="selectSub('${s.id}')">
+      <span>${s.name}</span>
+      <small>${st.aprobado}/${st.total} aprobados</small>
+    </button>`;
+  }).join("");
+}
+
+function renderMain(){
+  const sub=getSub();
+  const st=stats(sub.assignments);
+  const ap=sub.groups.filter(g=>g.status==="aprobado");
+  const ag=ap.find(g=>g.id===state.activeGroupId)??ap[0]??null;
+  if(!state.activeGroupId&&ag)state.activeGroupId=ag.id;
+
+  document.getElementById("role-sub").textContent=state.role==="teacher"?sub.teacher:"5to A Informática";
+
+  const filters=["todos","hacer","vencido","rehacer","aprobado"];
+  const filterLabels={"todos":"Todos","hacer":"Por hacer","vencido":"Vencidos","rehacer":"A rehacer","aprobado":"Aprobados"};
+  const visAsgns=state.filter==="todos"?sub.assignments:sub.assignments.filter(a=>visStatus(a)===state.filter);
+
+  const rightPanel=state.role==="teacher"?teacherPanelHTML(sub):studentGroupPanelHTML(sub);
+
+  document.getElementById("main").innerHTML=`
+    <div class="hero" style="--accent:${sub.accent}">
+      <div>
+        <p class="eyebrow">Materia seleccionada</p>
+        <h2>${sub.name}</h2>
+        <p>${sub.description}</p>
+        <div class="meta">
+          <span class="pill">${sub.teacher}</span>
+          <span class="pill">${sub.room}</span>
+        </div>
+      </div>
+      <div class="pct-card">
+        <span>${pct(sub.assignments)}%</span>
+        <small>trabajos aprobados</small>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat warn"><span class="val">${st.hacer}</span><p>Por hacer</p></div>
+      <div class="stat danger"><span class="val">${st.vencido}</span><p>Vencidos</p></div>
+      <div class="stat danger"><span class="val">${st.rehacer}</span><p>A rehacer</p></div>
+      <div class="stat ok"><span class="val">${st.aprobado}</span><p>Aprobados</p></div>
+    </div>
+    <div class="content-grid">
+      <div class="panel">
+        <div class="panel-hdr">
+          <div><p class="eyebrow">Seguimiento</p><h3>Trabajos y notas</h3></div>
+          <span class="pill">Materia</span>
+        </div>
+        <div class="filters">
+          ${filters.map(f=>`<button class="${f===state.filter?"active":""}" onclick="setFilter('${f}')">${filterLabels[f]}</button>`).join("")}
+        </div>
+        <div class="asgn-list">
+          ${visAsgns.map(a=>asgnHTML(a)).join("")}
+        </div>
+      </div>
+      ${rightPanel}
+    </div>
+    <div class="chat-card">
+      <div class="panel-hdr">
+        <div><p class="eyebrow">Chat autorizado</p><h3>Grupos de ${sub.name}</h3></div>
+        <span class="pill">${ap.length} ${ap.length===1?"chat":"chats"}</span>
+      </div>
+      ${ap.length===0
+        ?`<p class="empty">Cuando el docente apruebe una solicitud, el chat aparecerá acá.</p>`
+        :`<div class="chat-tabs">${ap.map(g=>`<button class="${ag&&g.id===ag.id?"active":""}" onclick="selectGroup('${g.id}')">${g.name}</button>`).join("")}</div>
+          <div class="chat-layout">
+            <div class="chat-members">
+              <h4>Integrantes</h4>
+              ${ag?ag.members.map(m=>`<span>${m}</span>`).join(""):""}
+              <small>${state.role==="teacher"?"Supervisando como docente.":"El docente puede supervisar."}</small>
+            </div>
+            <div class="chat-box">
+              <div class="msgs" id="msgs">
+                ${ag?ag.messages.map((m,i)=>msgHTML(m,i)).join(""):""}
+              </div>
+              <div class="chat-form">
+                <input class="chat-input" id="chat-input" placeholder="Escribí un mensaje..." value="${state.chatDraft}" oninput="state.chatDraft=this.value" onkeydown="if(event.key==='Enter')sendMsg()">
+                <button class="send-btn" onclick="sendMsg()">Enviar</button>
+              </div>
+            </div>
+          </div>`
+      }
+    </div>
+  `;
+  const msgs=document.getElementById("msgs");
+  if(msgs)msgs.scrollTop=msgs.scrollHeight;
+}
+
+function asgnHTML(a){
+  const vs=visStatus(a);
+  const cfg=statusCfg[vs];
+  return `<article class="asgn">
+    <div class="asgn-top">
+      <div><span class="type">${a.type}</span><h4>${a.title}</h4></div>
+      <span class="badge ${cfg.cls}">${cfg.label}</span>
+    </div>
+    <p>${a.comment}</p>
+    <div class="asgn-meta">
+      <span>Entrega: ${fmtDate(a.dueDate)}</span>
+      <span>Nota: ${a.grade===null?"Sin corregir":a.grade}</span>
+    </div>
+    ${state.role==="teacher"?`<div class="teacher-edit">
+      <label>Estado<select onchange="updAsgn('${a.id}','status',this.value)">
+        ${["hacer","entregado","aprobado","rehacer"].map(s=>`<option value="${s}"${a.status===s?" selected":""}>${statusCfg[s].label}</option>`).join("")}
+      </select></label>
+      <label>Fecha<input type="date" value="${a.dueDate}" onchange="updAsgn('${a.id}','dueDate',this.value)"></label>
+      <label>Nota<input type="number" min="1" max="10" value="${a.grade??""}" onchange="updAsgn('${a.id}','grade',this.value?Number(this.value):null)"></label>
+    </div>`:""}
+  </article>`;
+}
+
+function studentGroupPanelHTML(sub){
+  const pending=sub.groups.filter(g=>g.status==="pendiente");
+  const rejected=sub.groups.filter(g=>g.status==="rechazado");
+  const fb=state.feedback;
+  return `<div class="panel">
+    <div class="panel-hdr">
+      <div><p class="eyebrow">Trabajo en equipo</p><h3>Solicitar grupo</h3></div>
+      <span class="pill">Requiere aprobación</span>
+    </div>
+    <div class="gform">
+      <label>Nombre del grupo
+        <input id="gname" placeholder="Ej: Equipo frontend" value="${esc(state.reqForm.name)}" oninput="state.reqForm.name=this.value">
+      </label>
+      <label>Motivo
+        <textarea id="greason" placeholder="¿Para qué trabajo necesitan el chat?" oninput="state.reqForm.reason=this.value">${esc(state.reqForm.reason)}</textarea>
+      </label>
+      <div>
+        <p class="field-title">Compañeros</p>
+        <div class="chips">
+          ${classmates.map(m=>`<label class="chip${state.reqForm.members.includes(m)?" sel":""}" onclick="toggleMember('${m}')">
+            <input type="checkbox" ${state.reqForm.members.includes(m)?"checked":""}>${m}
+          </label>`).join("")}
+        </div>
+      </div>
+      <button class="primary-btn" onclick="submitGroup()">Enviar solicitud</button>
+      ${fb?`<p class="feedback ${fb.type==="success"?"ok":"err"}">${fb.message}</p>`:""}
+    </div>
+    <div class="req-list">
+      <h4 style="font-size:.88rem;font-weight:900;margin-bottom:.5rem">Mis solicitudes</h4>
+      ${[...pending,...rejected].length===0
+        ?`<p class="empty">Todavía no hay solicitudes pendientes.</p>`
+        :[...pending,...rejected].map(g=>`<div class="req-item">
+            <strong style="font-size:.8rem">${g.name}</strong>
+            <span class="badge ${g.status==="pendiente"?"warn":"danger"}">${g.status==="pendiente"?"Pendiente":"Rechazado"}</span>
+          </div>`).join("")
+      }
+    </div>
+  </div>`;
+}
+
+function teacherPanelHTML(sub){
+  const pending=sub.groups.filter(g=>g.status==="pendiente");
+  return `<div class="panel">
+    <div class="panel-hdr">
+      <div><p class="eyebrow">Panel docente</p><h3>Solicitudes de grupos</h3></div>
+      <span class="pill">${pending.length} pendientes</span>
+    </div>
+    <div style="display:grid;gap:.65rem">
+      ${pending.length===0
+        ?`<p class="empty">No hay grupos esperando aprobación en esta materia.</p>`
+        :pending.map(g=>`<article class="req-card">
+          <h4>${g.name}</h4>
+          <p>${g.reason}</p>
+          <small>${g.members.join(", ")}</small>
+          <div class="dec-row">
+            <button class="approve-btn" onclick="decide('${g.id}','aprobado')">Aprobar</button>
+            <button class="reject-btn" onclick="decide('${g.id}','rechazado')">Rechazar</button>
+          </div>
+        </article>`).join("")
+      }
+    </div>
+  </div>`;
+}
+
+function msgHTML(m,i){
+  return `<div class="msg${m.author==="Tomás"?" own":""}">
+    <strong>${m.author}</strong>
+    <p>${m.text}</p>
+    <span>${m.time}</span>
+  </div>`;
+}
+
+function esc(s){return String(s).replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+
+function setFilter(f){state.filter=f;renderMain()}
+
+function updAsgn(id,field,val){
+  state.subjects=state.subjects.map(s=>{
+    if(s.id!==state.selId)return s;
+    return {...s,assignments:s.assignments.map(a=>a.id===id?{...a,[field]:val}:a)};
+  });
+  renderMain();
+}
+
+function toggleMember(m){
+  state.feedback=null;
+  const idx=state.reqForm.members.indexOf(m);
+  if(idx>=0)state.reqForm.members.splice(idx,1);
+  else state.reqForm.members.push(m);
+  renderMain();
+}
+
+function submitGroup(){
+  const name=state.reqForm.name.trim();
+  const reason=state.reqForm.reason.trim();
+  const members=[...state.reqForm.members];
+  if(!name||members.length===0){
+    state.feedback={type:"danger",message:"Escribí un nombre y elegí al menos un compañero."};
+    renderMain();return;
+  }
+  const newG={id:"g-"+Date.now(),name,reason:reason||"Sin descripción.",status:"pendiente",members:["Tomás",...members],messages:[]};
+  state.subjects=state.subjects.map(s=>s.id===state.selId?{...s,groups:[...s.groups,newG]}:s);
+  state.reqForm={name:"",reason:"",members:[]};
+  state.feedback={type:"success",message:"Solicitud enviada. El docente debe aprobarla."};
+  renderMain();
+}
+
+function decide(gid,status){
+  state.subjects=state.subjects.map(s=>{
+    if(s.id!==state.selId)return s;
+    return {...s,groups:s.groups.map(g=>{
+      if(g.id!==gid)return g;
+      const msgs=status==="aprobado"?[...g.messages,{author:s.teacher,text:"Grupo aprobado. Ya pueden coordinar desde acá.",time:"Ahora"}]:g.messages;
+      return {...g,status,messages:msgs};
+    })};
+  });
+  if(status==="aprobado")state.activeGroupId=gid;
+  renderMain();
+}
+
+function selectGroup(id){state.activeGroupId=id;renderMain()}
+
+function sendMsg(){
+  const draft=state.chatDraft.trim();
+  const sub=getSub();
+  const ag=sub.groups.find(g=>g.id===state.activeGroupId);
+  if(!draft||!ag)return;
+  const msg={author:state.role==="teacher"?sub.teacher:"Tomás",text:draft,time:"Ahora"};
+  state.subjects=state.subjects.map(s=>{
+    if(s.id!==state.selId)return s;
+    return {...s,groups:s.groups.map(g=>g.id===ag.id?{...g,messages:[...g.messages,msg]}:g)};
+  });
+  state.chatDraft="";
+  renderMain();
+}
+
+renderNav();
+const firstSub=state.subjects[0];
+const firstAg=firstSub.groups.find(g=>g.status==="aprobado");
+state.activeGroupId=firstAg?.id??null;
+renderMain();
+</script>
